@@ -5,13 +5,6 @@ import java.util.stream.IntStream;
 public class endgame {
     
     public static ArrayList<Integer> valid_indices;
-    public static int[] board;
-    public static int[] marbles;
-
-    public endgame() {
-        board = new int[284];
-        marbles = new int[10];
-    }
     
     public static void setValidSpaces() {
         /* builds the array of indices that are actually board positions */
@@ -25,10 +18,52 @@ public class endgame {
         }      
     }
 
+    public static int distance(int square) {
+        ArrayList<Integer> special = new ArrayList<>(Arrays.asList(68, 69, 70, 71, 86, 87, 88, 77, 78, 79, 80, 95, 96, 97, 113, 114, 131));
+        ArrayList<Integer> sevens = new ArrayList<>(Arrays.asList(69, 87, 105, 79, 96, 113));
+
+        if (!special.contains(square)) {
+            return (int) (Math.floor(square/17));
+        } else {
+            if (square == 71 || square == 77) {
+                return 5;
+            } else {
+                if (square == 70 || square == 88 || square == 78 || square == 95) {
+                    return 6;
+                } else {
+                    if (sevens.contains(square)) {
+                        return 7;
+                    } else {
+                        return 8;
+                    }
+                }
+            }
+        }
+    }
+
+    public static int total_distance(int[] marbles) {
+        int total = -20;
+        for (int marble : marbles) {
+            total += distance(marble);
+        }
+        return total;
+    }
+
     public static void main(String[] args) {
         setValidSpaces();
+
+        int[] testmarbles = {4, 21, 22, 38, 39, 55, 57, 58, 90, 92};
+        
         System.out.println(valid_indices);       
         System.out.println(valid_indices.size()); 
+
+        // for (int space : valid_indices) {
+        //     System.out.println(space + " " + distance(space));
+        // }
+
+        System.out.println(total_distance(testmarbles));
+
+
     }
 
 }
