@@ -18,31 +18,25 @@ public class endgame {
         }      
     }
 
-    public static int distance(int square) {
-        ArrayList<Integer> special = new ArrayList<>(Arrays.asList(68, 69, 70, 71, 86, 87, 88, 77, 78, 79, 80, 95, 96, 97, 113, 114, 131));
-        ArrayList<Integer> sevens = new ArrayList<>(Arrays.asList(69, 87, 105, 79, 96, 113));
+    public static int distance(int space) {
+        int x = space%17;
+        int y = (int) Math.floor(space/17);
+        // the x and y co-ordinates of the space
 
-        if (!special.contains(square)) {
-            return (int) (Math.floor(square/17));
+        if (x < 4) { // in the bottom-left set of starting spaces
+            return (y + (4 - x));
         } else {
-            if (square == 71 || square == 77) {
-                return 5;
+            if (x - y > 4) { // in the bottom-right set of starting spaces
+                return (x - 4);
             } else {
-                if (square == 70 || square == 88 || square == 78 || square == 95) {
-                    return 6;
-                } else {
-                    if (sevens.contains(square)) {
-                        return 7;
-                    } else {
-                        return 8;
-                    }
-                }
+                return y; // in the main area where just vertical distance can be used
             }
         }
+
     }
 
     public static int total_distance(int[] marbles) {
-        int total = -20;
+        int total = -20; // minimum possible distance is 20
         for (int marble : marbles) {
             total += distance(marble);
         }
@@ -56,13 +50,6 @@ public class endgame {
         
         System.out.println(valid_indices);       
         System.out.println(valid_indices.size()); 
-
-        // for (int space : valid_indices) {
-        //     System.out.println(space + " " + distance(space));
-        // }
-
-        System.out.println(total_distance(testmarbles));
-
 
     }
 
