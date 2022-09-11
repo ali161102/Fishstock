@@ -18,5 +18,51 @@ public class precomputed {
 
         return valid_indices;
     }
-    
+
+
+    public int[] directionOffsets = {17, 18, -1, 1, -18, -17}; 
+    // change to indice when moving: UL  UR   L  R   DL   DR
+
+    public int[][] numSpacesToEdge;
+
+    public void calcSpacesToEdge() {
+        numSpacesToEdge = new int[284][6];
+
+        for (int space : valid_indices) {
+
+            // the x and y co-ordinates of the space
+            int x = space%17;
+            int y = (int) Math.floor(space/17);
+            
+            /*
+             * Logic for distance to edge in all 6 directions, based on x and y
+             */
+
+            /* UL */
+            // if 4 <= x <= 8 || x > 12:  return (12 - y)
+            // if x < 4 || 9 <= x <= 12: return (x - y + 4)
+
+            /* UR */
+            // if 0 <= y-x <= 4 || y-x < -4: return 12 - x
+            // if -4 <= y-x <= -1 || y-x > 4 : return 12 - y
+
+            /* L */
+            // if y < 4 || 8 <= y <= 12: return (x - 4)
+            // if 4 <= y <= 7 || y > 12: return (x - y + 4)
+
+            /* R */
+            // if 4 <= y <= 8 || y > 12: return (12 - x)
+            // if y < 4 || 9 <= y <= 12: return (y - x + 4)
+
+            /* DL */
+            // if -4 <= y-x <= 0 || y-x < -4: return (x - 4)
+            // if 1 <= y-x <= 4 || y-x > 4: return (y - 4)
+
+            /* DR */
+            // if 4 <= x <= 8 || x > 12: return (y - x + 4)
+            // if x < 4 || 9 <= x <= 12: return (y - 4)
+        }
+        
+    }
+
 }
