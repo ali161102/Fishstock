@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class precomputed {
@@ -21,48 +22,72 @@ public class precomputed {
 
 
     public int[] directionOffsets = {17, 18, -1, 1, -18, -17}; 
-    // change to indice when moving: UL  UR   L  R   DL   DR
+    // change to indice when moving: UL  UR  L   R   DL   DR
+    //                 array indice: 0   1   2   3   4    5
 
-    public int[][] numSpacesToEdge;
+    public static int[][] numSpacesToEdge; // in form [space_index][direction]
 
-    public void calcSpacesToEdge() {
-        numSpacesToEdge = new int[284][6];
+    public static void calcSpacesToEdge() {
+        numSpacesToEdge = new int[285][6];
 
         for (int space : valid_indices) {
 
             // the x and y co-ordinates of the space
             int x = space%17;
             int y = (int) Math.floor(space/17);
-            
+            int d = y - x; // difference between y and x
+
             /*
-             * Logic for distance to edge in all 6 directions, based on x and y
+             * Calculate distance to edge in all 6 directions, based on x and y
              */
 
-            /* UL */
-            // if 4 <= x <= 8 || x > 12:  return (12 - y)
-            // if x < 4 || 9 <= x <= 12: return (x - y + 4)
+            // UL [0] and DR [5] directions
+            if (x < 4 || (9 <= x && x <= 12)) {
+                numSpacesToEdge[space][0] = x - y + 4;
+                numSpacesToEdge[space][5] = y - 4;     
+            } else {
+                numSpacesToEdge[space][0] = 12 - y;
+                numSpacesToEdge[space][5] = y - x + 4;
+            }
 
-            /* UR */
-            // if 0 <= y-x <= 4 || y-x < -4: return 12 - x
-            // if -4 <= y-x <= -1 || y-x > 4 : return 12 - y
+            // UR [1] and DL [4] directions
+            if (-4 <= d && d <= -1) {
+                numSpacesToEdge[space][1] = 12 - y;
+                numSpacesToEdge[space][4] = x - 4;
+            } else {
+                if (0 <= d && d <= 4) {
+                    numSpacesToEdge[space][1] = 12 - x;
+                    numSpacesToEdge[space][4] = y - 4;
+                } else {
+                    if (d < -4) {
+                        numSpacesToEdge[space][1] = 12 - x;
+                        numSpacesToEdge[space][4] = x - 4;
+                    } else {
+                        numSpacesToEdge[space][1] = 12 - y;
+                        numSpacesToEdge[space][4] = y - 4;
+                    } 
+                }
+            }
 
-            /* L */
-            // if y < 4 || 8 <= y <= 12: return (x - 4)
-            // if 4 <= y <= 7 || y > 12: return (x - y + 4)
-
-            /* R */
-            // if 4 <= y <= 8 || y > 12: return (12 - x)
-            // if y < 4 || 9 <= y <= 12: return (y - x + 4)
-
-            /* DL */
-            // if -4 <= y-x <= 0 || y-x < -4: return (x - 4)
-            // if 1 <= y-x <= 4 || y-x > 4: return (y - 4)
-
-            /* DR */
-            // if 4 <= x <= 8 || x > 12: return (y - x + 4)
-            // if x < 4 || 9 <= x <= 12: return (y - 4)
+            // L [2] and R [3] directions
+            if (y < 4 || (9 <= y && y <= 12)) {
+                numSpacesToEdge[space][2] = x - 4;
+                numSpacesToEdge[space][3] = y - x + 4;
+            } else {
+                numSpacesToEdge[space][2] = x - y + 4;
+                numSpacesToEdge[space][3] = 12 - x;
+            }            
         }
         
+    }
+
+    public static void main(String[] args) {
+        setValidSpaces();
+        calcSpacesToEdge();
+        
+        for (int space : valid_indices) {
+            System.out.println(space + "\t" + Arrays.toString(numSpacesToEdge[space]));
+        }
     }
 
 }
