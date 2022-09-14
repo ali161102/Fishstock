@@ -3,10 +3,17 @@ import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class precomputed {
-
-    public static ArrayList<Integer> valid_indices;
     
-    public static ArrayList<Integer> setValidSpaces() {
+    public static ArrayList<Integer> valid_indices;
+
+    public static int[] directionOffsets = {17, 18, -1, 1, -18, -17}; 
+    //        change to indice when moving: UL  UR  L   R   DL   DR
+    //                        array indice: 0   1   2   3   4    5
+
+    public static int[][] numSpacesToEdge; // in form [space_index][direction]
+
+    public precomputed() {
+
         /* builds the array of indices that are actually board positions */
         valid_indices = new ArrayList<Integer>();
 
@@ -15,19 +22,9 @@ public class precomputed {
 
         for (int i = 0; i < middle_starts.length; i++) {
             IntStream.range(middle_starts[i], middle_ends[i]+1).forEach(n -> valid_indices.add(n));
-        }      
-
-        return valid_indices;
-    }
+        }    
 
 
-    public int[] directionOffsets = {17, 18, -1, 1, -18, -17}; 
-    // change to indice when moving: UL  UR  L   R   DL   DR
-    //                 array indice: 0   1   2   3   4    5
-
-    public static int[][] numSpacesToEdge; // in form [space_index][direction]
-
-    public static void calcSpacesToEdge() {
         numSpacesToEdge = new int[285][6];
 
         for (int space : valid_indices) {
@@ -78,16 +75,7 @@ public class precomputed {
                 numSpacesToEdge[space][3] = 12 - x;
             }            
         }
-        
-    }
 
-    public static void main(String[] args) {
-        setValidSpaces();
-        calcSpacesToEdge();
-        
-        for (int space : valid_indices) {
-            System.out.println(space + "\t" + Arrays.toString(numSpacesToEdge[space]));
-        }
-    }
 
+    }
 }
