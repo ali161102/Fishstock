@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,6 +8,7 @@ import java.util.Queue;
 class move_generator {
 
     static int[][] numSpacesToEdge;
+    static ArrayList<Integer> valid_indices;
     static int[] directionOffsets = precomputed.directionOffsets;
     //public static board b;
 
@@ -15,6 +17,7 @@ class move_generator {
         precomputed precalc = new precomputed();
 
         numSpacesToEdge = precomputed.numSpacesToEdge;
+        valid_indices = precomputed.valid_indices;
   
         ArrayList<move> moves = new ArrayList<move>();
         ArrayList<Integer> reachable = new ArrayList<Integer>();
@@ -29,16 +32,22 @@ class move_generator {
             reachable.clear();
             predecessors.clear(); 
 
+            for (int dir = 0; dir < 6; dir++) { // only for starting position:
+                int oneaway = index + directionOffsets[dir]; // index of space one away
+                if (valid_indices.contains(oneaway)) { // (and make sure it is actually an index that can have a marble)
+                    if (b.space[oneaway] == 0) { 
+                        move onespacemove = new move(index, oneaway, null); // add as a valid move if space is empty
+                        moves.add(onespacemove);
+                    }
+                }        
+            }
+
             /* do a bfs from position to find all possible ending spaces */
             queue.add(index);
             while(!queue.isEmpty()) {
                 int current = queue.remove();
-
-
                 for (int dir = 0; dir < 6; dir++) { // in each direction, 
-                
                         int closest = -1;
-
                         for (int dist = 1; dist < ((numSpacesToEdge[current][dir])/2)+1; dist++) { // look for the next closest marble that could be a valid jump
                         
                             int check = current + (dist * directionOffsets[dir]); // get index of space to check by adding offset
@@ -117,8 +126,8 @@ class move_generator {
         ArrayList<move> possiblemoves = generateMoves(b);
 
         for (move mv : possiblemoves) {
-            //System.out.println(move.getPath(mv));
-            mv.printMove();
+            System.out.println(move.getPath(mv));
+            //mv.printMove();
         }
     }
 }
